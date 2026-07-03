@@ -214,7 +214,8 @@
           : `✅ dans le budget (${fmt(budget - totalOptimise)} de marge)`
       }`;
 
-    // Menu — chaque repas est dépliable pour révéler la recette complète
+    // 📅 Menu de la semaine — planning compact (le plat par créneau, sans
+    //    répéter la recette entière à chaque fois).
     const elMenu = document.getElementById("resultat-menu");
     let htmlMenu = "";
     let jourCourant = "";
@@ -224,53 +225,72 @@
         htmlMenu += `<div class="jour"><h3>${item.jour}</h3>`;
         jourCourant = item.jour;
       }
-
       if (!item.recette) {
         htmlMenu += `
-          <div class="repas repas--vide">
+          <div class="repas-plan repas--vide">
             <span class="moment">${item.moment}</span>
             <span class="plat">— aucune recette dispo —</span>
           </div>`;
         continue;
       }
-
       const r = item.recette;
-      const badge = `<span class="complexite c${r.complexite}">${"●".repeat(r.complexite)}</span>`;
+      htmlMenu += `
+        <div class="repas-plan">
+          <span class="moment">${item.moment}</span>
+          <span class="plat">${r.nom}</span>
+          <span class="complexite c${r.complexite}">${"●".repeat(r.complexite)}</span>
+          <span class="prix">${fmt(item.cout)}</span>
+        </div>`;
+    }
+    if (jourCourant) htmlMenu += "</div>";
+    elMenu.innerHTML = htmlMenu;
 
-      // Détail : ingrédients dosés pour N personnes + étapes numérotées
+    // 🍳 À cuisiner cette semaine — chaque plat UNE fois, avec les quantités
+    //    TOTALES (× nb de repas × personnes) : le batch cooking pour de vrai.
+    const parRecette = new Map(); // id -> { recette, count, coutRepas }
+    for (const item of menu) {
+      if (!item.recette) continue;
+      const e =
+        parRecette.get(item.recette.id) ||
+        { recette: item.recette, count: 0, coutRepas: item.cout };
+      e.count++;
+      parRecette.set(item.recette.id, e);
+    }
+    const elRec = document.getElementById("resultat-recettes");
+    let htmlRec = "";
+    for (const { recette: r, count, coutRepas } of parRecette.values()) {
+      const totalPortions = personnes * count; // à cuisiner en une seule fois
       const ingHtml = r.ingredients
         .map(
           (ing) =>
             `<li>${CATALOGUE[ing.id].nom} — <strong>${fmtQte(
               ing.qte,
               ing.unite,
-              personnes
+              totalPortions
             )}</strong></li>`
         )
         .join("");
-      const etapesHtml = (r.etapes || [])
-        .map((e) => `<li>${e}</li>`)
-        .join("");
+      const etapesHtml = (r.etapes || []).map((e) => `<li>${e}</li>`).join("");
+      const nbRepasTxt = count > 1 ? `${count} repas` : `1 repas`;
 
-      htmlMenu += `
-        <details class="repas">
+      htmlRec += `
+        <details class="repas recette-cuisiner"${count > 1 ? " open" : ""}>
           <summary>
-            <span class="moment">${item.moment}</span>
             <span class="plat">${r.nom}</span>
-            ${badge}
-            <span class="prix">${fmt(item.cout)}</span>
+            <span class="badge-repas">🔁 ${nbRepasTxt}</span>
+            <span class="complexite c${r.complexite}">${"●".repeat(r.complexite)}</span>
+            <span class="prix">${fmt(coutRepas * count)}</span>
           </summary>
           <div class="recette-detail">
-            <p class="recette-meta">⏱️ ${r.temps || "?"} min · pour ${personnes} pers.</p>
-            <h5>Ingrédients</h5>
+            <p class="recette-meta">⏱️ ${r.temps || "?"} min · <strong>${nbRepasTxt}</strong> · ${personnes} pers./repas → cuisine <strong>${totalPortions} portions</strong> d'un coup</p>
+            <h5>Ingrédients — quantités totales à acheter/cuisiner</h5>
             <ul class="recette-ing">${ingHtml}</ul>
             <h5>Préparation</h5>
             <ol class="recette-etapes">${etapesHtml}</ol>
           </div>
         </details>`;
     }
-    if (jourCourant) htmlMenu += "</div>";
-    elMenu.innerHTML = htmlMenu;
+    elRec.innerHTML = htmlRec;
 
     // Liste de courses par rayon
     const elListe = document.getElementById("resultat-liste");

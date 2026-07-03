@@ -216,6 +216,29 @@ main { max-width: 1040px; margin: 0 auto; padding: 1.6rem 1rem 2rem; }
 }
 .jour h3::after { content: ""; flex: 1; height: 2px; background: var(--vert-clair); border-radius: 2px; }
 
+/* Menu planning compact (non dépliable) */
+.repas-plan {
+  display: grid;
+  grid-template-columns: 3.6rem 1fr auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--creme2);
+}
+.repas-plan .plat { font-weight: 700; }
+
+/* Cartes « À cuisiner » : plat distinct, quantités totales */
+.recette-cuisiner summary { grid-template-columns: 1fr auto auto auto; }
+.badge-repas {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--terracotta-fonce);
+  background: #fdeae4;
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  white-space: nowrap;
+}
+
 .repas { border-bottom: 1px solid var(--creme2); padding: 0.1rem 0; }
 .repas summary {
   display: grid;
