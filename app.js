@@ -274,7 +274,7 @@
       const nbRepasTxt = count > 1 ? `${count} repas` : `1 repas`;
 
       htmlRec += `
-        <details class="repas recette-cuisiner" open>
+        <details class="repas recette-cuisiner">
           <summary>
             <span class="plat">${r.nom}</span>
             <span class="badge-repas">🔁 ${nbRepasTxt}</span>
@@ -437,14 +437,12 @@
       }
     }
 
-    // Calcul AUTOMATIQUE : au chargement + à chaque changement de champ.
-    // Le bouton sert alors juste à re-générer (mélanger) les menus.
+    // Génération uniquement au clic : à l'arrivée la page est vide, on remplit
+    // le formulaire puis on clique pour obtenir le menu.
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       lancerGeneration(true);
     });
-    form.addEventListener("change", () => lancerGeneration(false));
-    lancerGeneration(false);
   }
 
   document.addEventListener("DOMContentLoaded", init);
