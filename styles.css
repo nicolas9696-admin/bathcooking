@@ -1,0 +1,357 @@
+/* ============================================================================
+ * BathCooking — styles.css
+ * Direction : « pro mais famille » — chaleureux (crème, vert frais, terracotta,
+ * typo ronde Nunito, emojis) et soigné (ombres douces, coins arrondis, focus).
+ * ==========================================================================*/
+
+:root {
+  /* Palette */
+  --vert: #1f9d63;
+  --vert-fonce: #157a4c;
+  --vert-clair: #e7f6ee;
+  --terracotta: #e8724c;
+  --terracotta-fonce: #d15a37;
+  --jaune: #f6c453;
+  --creme: #faf6f0;
+  --creme2: #f3ebe0;
+  --carte: #ffffff;
+  --texte: #2c2a27;
+  --texte-doux: #7a726a;
+  --bordure: #ece3d6;
+  /* Enseignes */
+  --migros: #ff7a00;
+  --coop: #d81e05;
+  /* Ombres & rayons */
+  --ombre: 0 8px 24px rgba(60, 45, 30, 0.08);
+  --ombre-sm: 0 2px 10px rgba(60, 45, 30, 0.06);
+  --radius: 18px;
+  --radius-sm: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Nunito", -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--texte);
+  line-height: 1.55;
+  background-color: var(--creme);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(31, 157, 99, 0.06), transparent 42%),
+    radial-gradient(circle at 88% 0%, rgba(232, 114, 76, 0.07), transparent 40%);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.01em; }
+
+/* ---------- En-tête ---------- */
+.entete {
+  background: linear-gradient(135deg, var(--vert) 0%, var(--vert-fonce) 100%);
+  color: #fff;
+  padding: 1.6rem 1rem 0;
+  box-shadow: var(--ombre-sm);
+}
+.entete-inner { max-width: 1040px; margin: 0 auto; }
+.marque { display: flex; align-items: center; gap: 0.9rem; }
+.logo {
+  font-size: 2.4rem;
+  background: rgba(255, 255, 255, 0.16);
+  width: 3.4rem; height: 3.4rem;
+  display: grid; place-items: center;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.marque-txt h1 { margin: 0; font-size: 1.8rem; font-weight: 900; }
+.sous-titre { margin: 0.15rem 0 0; opacity: 0.92; font-size: 0.98rem; font-weight: 600; }
+
+/* ---------- Onglets ---------- */
+.tabs {
+  max-width: 1040px;
+  margin: 1.2rem auto 0;
+  display: flex;
+  gap: 0.4rem;
+  padding-bottom: 0;
+}
+.tab {
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  padding: 0.7rem 1.35rem;
+  border-radius: 14px 14px 0 0;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.tab:hover { background: rgba(255, 255, 255, 0.28); }
+.tab.actif { background: var(--creme); color: var(--vert-fonce); }
+
+/* ---------- Layout ---------- */
+main { max-width: 1040px; margin: 0 auto; padding: 1.6rem 1rem 2rem; }
+
+.carte {
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--radius);
+  box-shadow: var(--ombre);
+  padding: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+.carte-titre { margin-bottom: 1.2rem; }
+.carte-titre h2 { margin: 0; font-size: 1.35rem; }
+.carte-soustitre { margin: 0.2rem 0 0; color: var(--texte-doux); font-weight: 600; font-size: 0.92rem; }
+.titre-icone { margin: 0 0 1rem; font-size: 1.2rem; }
+
+.pastille {
+  display: inline-block;
+  background: var(--vert-clair);
+  color: var(--vert-fonce);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.05rem 0.6rem;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+/* ---------- Formulaire ---------- */
+.grille-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.1rem;
+}
+.champ { display: flex; flex-direction: column; gap: 0.35rem; }
+.champ-lbl { font-weight: 700; font-size: 0.92rem; }
+.champ .aide { font-weight: 600; font-size: 0.76rem; color: var(--texte-doux); margin-top: -0.2rem; }
+.champ input,
+.champ select {
+  padding: 0.7rem 0.8rem;
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  background: #fffdfa;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.champ input:focus,
+.champ select:focus {
+  outline: none;
+  border-color: var(--vert);
+  box-shadow: 0 0 0 3px var(--vert-clair);
+}
+
+.enseignes {
+  border: 1.5px dashed var(--bordure);
+  border-radius: var(--radius-sm);
+  margin: 1.3rem 0;
+  padding: 0.8rem 1rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.enseignes legend { font-weight: 700; padding: 0 0.4rem; color: var(--texte-doux); font-size: 0.85rem; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  background: var(--creme);
+  border: 1.5px solid var(--bordure);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem 0.35rem 0.6rem;
+  font-weight: 700;
+  transition: border-color 0.15s, background 0.15s;
+}
+.chip:hover { border-color: var(--vert); }
+.chip input { accent-color: var(--vert); width: 1.05rem; height: 1.05rem; }
+
+.btn-principal {
+  width: 100%;
+  padding: 0.95rem;
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-fonce) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 1.08rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(209, 90, 55, 0.28);
+  transition: transform 0.12s, box-shadow 0.12s, filter 0.12s;
+}
+.btn-principal:hover { filter: brightness(1.04); box-shadow: 0 8px 22px rgba(209, 90, 55, 0.36); }
+.btn-principal:active { transform: translateY(1px); }
+
+.maj { text-align: right; font-size: 0.8rem; color: var(--texte-doux); font-weight: 600; margin: 0.9rem 0 0; }
+
+/* ---------- Bandeau budget ---------- */
+.bandeau {
+  border-radius: var(--radius);
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  box-shadow: var(--ombre-sm);
+  border: 1.5px solid transparent;
+}
+.bandeau strong { font-weight: 900; }
+.bandeau--vert { background: var(--vert-clair); border-color: rgba(31, 157, 99, 0.35); color: var(--vert-fonce); }
+.bandeau--rouge { background: #fdeae4; border-color: rgba(209, 90, 55, 0.4); color: var(--terracotta-fonce); }
+
+/* ---------- Colonnes résultats ---------- */
+.colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 800px) { .colonnes { grid-template-columns: 1fr; } }
+
+/* ---------- Menu ---------- */
+.jour { margin-bottom: 1.1rem; }
+.jour h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--vert-fonce);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.jour h3::after { content: ""; flex: 1; height: 2px; background: var(--vert-clair); border-radius: 2px; }
+
+.repas { border-bottom: 1px solid var(--creme2); padding: 0.1rem 0; }
+.repas summary {
+  display: grid;
+  grid-template-columns: 3.6rem 1fr auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+}
+.repas summary::-webkit-details-marker { display: none; }
+.repas summary::before {
+  content: "▸";
+  position: absolute;
+  left: -1rem;
+  color: var(--terracotta);
+  font-size: 0.9rem;
+  transition: transform 0.15s;
+}
+.repas[open] summary::before { transform: rotate(90deg); }
+.repas summary:hover .plat { color: var(--vert-fonce); }
+.repas--vide {
+  display: grid; grid-template-columns: 3.6rem 1fr; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0; color: var(--texte-doux);
+}
+
+.moment {
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--creme2);
+  color: var(--texte-doux);
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  text-align: center;
+}
+.plat { font-weight: 700; transition: color 0.12s; }
+.complexite { font-size: 0.72rem; letter-spacing: -1px; }
+.complexite.c1 { color: #59b256; }
+.complexite.c2 { color: var(--jaune); }
+.complexite.c3 { color: var(--terracotta); }
+.prix { font-variant-numeric: tabular-nums; color: var(--texte-doux); font-size: 0.9rem; font-weight: 700; }
+
+/* Détail recette (menu + browse) */
+.recette-detail {
+  background: var(--creme);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.1rem;
+  margin: 0.1rem 0 0.7rem;
+  font-size: 0.9rem;
+}
+.recette-meta { margin: 0 0 0.6rem; color: var(--texte-doux); font-size: 0.82rem; font-weight: 700; display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+.recette-detail h5 {
+  margin: 0.7rem 0 0.35rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vert-fonce);
+  font-weight: 800;
+}
+.recette-ing { margin: 0; padding-left: 1.1rem; }
+.recette-ing li { padding: 0.12rem 0; }
+.recette-etapes { margin: 0; padding-left: 1.3rem; }
+.recette-etapes li { padding: 0.18rem 0; }
+
+/* ---------- Liste de courses ---------- */
+.rayon { margin-bottom: 1.1rem; }
+.rayon h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texte-doux);
+  padding-left: 0.6rem;
+  border-left: 3px solid var(--terracotta);
+}
+.rayon ul { list-style: none; margin: 0; padding: 0; }
+.rayon li {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--creme2);
+}
+.rayon li label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; }
+.rayon li input { accent-color: var(--vert); width: 1rem; height: 1rem; }
+.qte { font-size: 0.85rem; color: var(--texte-doux); font-variant-numeric: tabular-nums; font-weight: 700; }
+
+/* Badges enseignes */
+.ens {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 0.14rem 0.5rem;
+  border-radius: 999px;
+  color: #fff;
+}
+.ens--migros { background: var(--migros); }
+.ens--coop { background: var(--coop); }
+.ens--na { background: #b3aaa0; }
+
+.recap {
+  margin-top: 1.1rem;
+  padding: 0.9rem 1rem;
+  background: var(--vert-clair);
+  border-radius: var(--radius-sm);
+}
+.recap h4 { margin: 0 0 0.5rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--vert-fonce); }
+.recap ul { list-style: none; margin: 0; padding: 0; }
+.recap li { display: flex; justify-content: space-between; align-items: center; padding: 0.28rem 0; font-weight: 700; }
+
+/* ---------- Onglet Recettes ---------- */
+.filtres-recettes { display: flex; gap: 0.75rem; margin-bottom: 1.3rem; flex-wrap: wrap; }
+.filtres-recettes input,
+.filtres-recettes select {
+  padding: 0.7rem 0.85rem;
+  border: 1.5px solid var(--bordure);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  background: #fffdfa;
+}
+.filtres-recettes input { flex: 1; min-width: 220px; }
+.filtres-recettes input:focus,
+.filtres-recettes select:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px var(--vert-clair); }
+
+#liste-recettes { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.6rem; }
+@media (max-width: 760px) { #liste-recettes { grid-template-columns: 1fr; } }
+.recette-browse summary { grid-template-columns: 1fr auto auto; }
+.vide-recettes { color: var(--texte-doux); padding: 1.2rem 0; font-weight: 600; }
+
+/* ---------- Pied ---------- */
+.pied { text-align: center; color: var(--texte-doux); font-size: 0.85rem; font-weight: 600; padding: 1rem 1rem 2rem; }
+.pied strong { color: var(--texte); }

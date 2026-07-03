@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BathCooking — Menus & liste de courses de la semaine</title>
+  <meta name="description" content="Planifie les menus de la semaine et la liste de courses de la famille, au meilleur prix (CHF)." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="entete">
+    <div class="entete-inner">
+      <div class="marque">
+        <span class="logo" aria-hidden="true">🍳</span>
+        <div class="marque-txt">
+          <h1>BathCooking</h1>
+          <p class="sous-titre">Les menus de la semaine, faits maison — au meilleur prix 🧺</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab actif" data-tab="generateur" role="tab">🛒 Générateur</button>
+      <button class="tab" data-tab="recettes" role="tab">📖 Recettes</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ ONGLET GÉNÉRATEUR ============ -->
+    <div id="tab-generateur" class="tab-contenu">
+      <section class="carte carte-form">
+        <div class="carte-titre">
+          <h2>Planifie ta semaine</h2>
+          <p class="carte-soustitre">Renseigne tes besoins, on s'occupe des menus et des courses.</p>
+        </div>
+
+        <form id="form-courses">
+          <div class="grille-form">
+            <label class="champ">
+              <span class="champ-lbl">👨‍👩‍👧 Nombre de personnes</span>
+              <input type="number" name="personnes" min="1" max="12" value="2" required />
+            </label>
+
+            <label class="champ">
+              <span class="champ-lbl">💰 Budget de la semaine (CHF)</span>
+              <input type="number" name="budget" min="10" step="5" value="120" required />
+            </label>
+
+            <label class="champ">
+              <span class="champ-lbl">🍽️ Repas à préparer</span>
+              <select name="creneaux">
+                <option value="midi">Midi seulement</option>
+                <option value="soir">Soir seulement</option>
+                <option value="les_deux" selected>Midi et soir</option>
+              </select>
+            </label>
+
+            <label class="champ">
+              <span class="champ-lbl">🔁 Repas identiques par plat</span>
+              <span class="aide">cuisine 1 fois, mange N repas d'affilée</span>
+              <input type="number" name="repetition" min="1" max="14" value="2" required />
+            </label>
+
+            <label class="champ">
+              <span class="champ-lbl">🎚️ Complexité max des recettes</span>
+              <select name="complexiteMax">
+                <option value="1">Facile ●</option>
+                <option value="2" selected>Moyen ●●</option>
+                <option value="3">Élaboré ●●●</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class="enseignes">
+            <legend>Où faire les courses</legend>
+            <label class="chip"><input type="checkbox" name="enseigne_migros" checked /> <span class="ens ens--migros">Migros</span></label>
+            <label class="chip"><input type="checkbox" name="enseigne_coop" checked /> <span class="ens ens--coop">Coop</span></label>
+          </fieldset>
+
+          <button type="submit" class="btn-principal">Générer mon menu &amp; ma liste 🛒</button>
+        </form>
+        <p class="maj">🏷️ Prix : <span id="prix-maj">…</span></p>
+      </section>
+
+      <!-- RÉSULTATS -->
+      <section id="resultats" hidden>
+        <div id="bandeau-budget" class="bandeau"></div>
+
+        <div class="colonnes">
+          <div class="carte">
+            <h2 class="titre-icone">📅 Menu de la semaine</h2>
+            <div id="resultat-menu"></div>
+          </div>
+
+          <div class="carte">
+            <h2 class="titre-icone">🛒 Liste de courses</h2>
+            <div id="resultat-liste"></div>
+            <div id="resultat-recap" class="recap"></div>
+          </div>
+        </div>
+      </section>
+    </div><!-- /tab-generateur -->
+
+    <!-- ============ ONGLET RECETTES ============ -->
+    <div id="tab-recettes" class="tab-contenu" hidden>
+      <section class="carte">
+        <div class="carte-titre">
+          <h2>📖 Toutes les recettes <span class="pastille" id="nb-recettes">0</span></h2>
+          <p class="carte-soustitre">Parcours le livre de recettes de la famille.</p>
+        </div>
+        <div class="filtres-recettes">
+          <input type="search" id="recherche-recette" placeholder="🔍 Rechercher une recette ou un ingrédient…" />
+          <select id="filtre-complexite">
+            <option value="0">Toutes complexités</option>
+            <option value="1">Facile ●</option>
+            <option value="2">Moyen ●●</option>
+            <option value="3">Élaboré ●●●</option>
+          </select>
+        </div>
+        <div id="liste-recettes"></div>
+      </section>
+    </div><!-- /tab-recettes -->
+  </main>
+
+  <footer class="pied">
+    <p>🍽️ <strong>BathCooking</strong> · prix en CHF · Migros &amp; Coop · fait avec ❤️ pour la famille</p>
+  </footer>
+
+  <!-- data.js AVANT app.js : app.js lit window.BATHCOOKING_DATA -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
