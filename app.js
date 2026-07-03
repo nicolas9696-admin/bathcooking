@@ -274,7 +274,7 @@
       const nbRepasTxt = count > 1 ? `${count} repas` : `1 repas`;
 
       htmlRec += `
-        <details class="repas recette-cuisiner"${count > 1 ? " open" : ""}>
+        <details class="repas recette-cuisiner" open>
           <summary>
             <span class="plat">${r.nom}</span>
             <span class="badge-repas">🔁 ${nbRepasTxt}</span>
@@ -409,25 +409,42 @@
     if (filt) filt.addEventListener("change", afficherToutesRecettes);
 
     const form = document.getElementById("form-courses");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+
+    function lireOptions() {
       const fd = new FormData(form);
-      const enseignes = ENSEIGNES.filter((en) => fd.get("enseigne_" + en));
-      if (enseignes.length === 0) {
-        alert("Sélectionne au moins une enseigne.");
+      return {
+        personnes: parseInt(fd.get("personnes"), 10) || 1,
+        budget: parseFloat(fd.get("budget")) || 0,
+        creneaux: fd.get("creneaux"),
+        repetition: parseInt(fd.get("repetition"), 10) || 1,
+        complexiteMax: parseInt(fd.get("complexiteMax"), 10) || 3,
+        enseignes: ENSEIGNES.filter((en) => fd.get("enseigne_" + en)),
+      };
+    }
+
+    function lancerGeneration(scroll) {
+      const options = lireOptions();
+      if (!options.enseignes.length) {
+        const b = document.getElementById("bandeau-budget");
+        b.className = "bandeau bandeau--rouge";
+        b.textContent = "Sélectionne au moins une enseigne pour calculer les prix.";
+        document.getElementById("resultats").hidden = false;
         return;
       }
-      const options = {
-        personnes: parseInt(fd.get("personnes"), 10),
-        budget: parseFloat(fd.get("budget")),
-        creneaux: fd.get("creneaux"),
-        repetition: parseInt(fd.get("repetition"), 10),
-        complexiteMax: parseInt(fd.get("complexiteMax"), 10),
-        enseignes,
-      };
       afficherResultats(options);
-      document.getElementById("resultats").scrollIntoView({ behavior: "smooth" });
+      if (scroll) {
+        document.getElementById("resultats").scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    // Calcul AUTOMATIQUE : au chargement + à chaque changement de champ.
+    // Le bouton sert alors juste à re-générer (mélanger) les menus.
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      lancerGeneration(true);
     });
+    form.addEventListener("change", () => lancerGeneration(false));
+    lancerGeneration(false);
   }
 
   document.addEventListener("DOMContentLoaded", init);
