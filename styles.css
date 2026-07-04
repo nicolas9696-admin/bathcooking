@@ -375,6 +375,68 @@ main { max-width: 1040px; margin: 0 auto; padding: 1.6rem 1rem 2rem; }
 .recette-browse summary { grid-template-columns: 1fr auto auto; }
 .vide-recettes { color: var(--texte-doux); padding: 1.2rem 0; font-weight: 600; }
 
+/* ---------- Barre d'export liste ---------- */
+.export-actions {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.btn-mini {
+  border: 1.5px solid var(--bordure);
+  background: var(--creme);
+  color: var(--texte);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.btn-mini:hover { border-color: var(--vert); background: #fff; }
+.btn-mini:active { transform: translateY(1px); }
+.btn-bring { background: #e8f4ff; border-color: #bcdcff; color: #1b6fc4; }
+.btn-bring:hover { border-color: #1b6fc4; background: #fff; }
+
+/* ---------- Toast ---------- */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%) translateY(1.5rem);
+  background: var(--texte);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+}
+#toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- Impression : n'imprimer que la liste de courses ---------- */
+@media print {
+  body.impression-liste .entete,
+  body.impression-liste .tabs,
+  body.impression-liste .carte-form,
+  body.impression-liste #bandeau-budget,
+  body.impression-liste #resultat-menu,
+  body.impression-liste #resultat-recettes,
+  body.impression-liste .export-actions,
+  body.impression-liste #tab-recettes,
+  body.impression-liste .pied {
+    display: none !important;
+  }
+  body.impression-liste { background: #fff; }
+  body.impression-liste .colonnes { grid-template-columns: 1fr; }
+  body.impression-liste .carte { box-shadow: none; border: none; }
+}
+
 /* ---------- Pied ---------- */
 .pied { text-align: center; color: var(--texte-doux); font-size: 0.85rem; font-weight: 600; padding: 1rem 1rem 2rem; }
 .pied strong { color: var(--texte); }

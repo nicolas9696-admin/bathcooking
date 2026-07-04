@@ -72,6 +72,19 @@
                 <option value="3">Élaboré ●●●</option>
               </select>
             </label>
+
+            <label class="champ">
+              <span class="champ-lbl">🌿 Saison</span>
+              <span class="aide">évite les plats lourds hors saison</span>
+              <select name="saison">
+                <option value="auto" selected>De saison (auto)</option>
+                <option value="toutes">Toute l'année</option>
+                <option value="printemps">🌸 Printemps</option>
+                <option value="ete">☀️ Été</option>
+                <option value="automne">🍂 Automne</option>
+                <option value="hiver">❄️ Hiver</option>
+              </select>
+            </label>
           </div>
 
           <fieldset class="enseignes">
@@ -97,6 +110,12 @@
 
           <div class="carte">
             <h2 class="titre-icone">🛒 Liste de courses</h2>
+            <div class="export-actions">
+              <button type="button" id="btn-copier" class="btn-mini">📋 Copier</button>
+              <button type="button" id="btn-telecharger" class="btn-mini">⬇️ Télécharger</button>
+              <button type="button" id="btn-imprimer" class="btn-mini">🖨️ Imprimer</button>
+              <button type="button" id="btn-bring" class="btn-mini btn-bring">📲 Bring!</button>
+            </div>
             <div id="resultat-liste"></div>
             <div id="resultat-recap" class="recap"></div>
           </div>

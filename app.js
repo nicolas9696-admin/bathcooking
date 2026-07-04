@@ -10,6 +10,36 @@
 
   const JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
+  const SAISON_LABEL = {
+    printemps: "🌸 printemps",
+    ete: "☀️ été",
+    automne: "🍂 automne",
+    hiver: "❄️ hiver",
+    toutes: "toute l'année",
+  };
+
+  // Saison courante d'après le mois (Date du navigateur)
+  function saisonActuelle() {
+    const m = new Date().getMonth(); // 0 = janvier
+    if (m >= 2 && m <= 4) return "printemps";
+    if (m >= 5 && m <= 7) return "ete";
+    if (m >= 8 && m <= 10) return "automne";
+    return "hiver";
+  }
+
+  // Résout l'option saison ("auto" -> saison courante ; "toutes"/explicite tel quel)
+  function resoudreSaison(saison) {
+    return saison === "auto" ? saisonActuelle() : saison || "toutes";
+  }
+
+  // Une recette convient-elle à la saison visée ?
+  // (recette sans champ `saisons` = valable toute l'année)
+  function recetteDeSaison(r, saisonEff) {
+    if (!saisonEff || saisonEff === "toutes") return true;
+    if (!r.saisons || !r.saisons.length) return true;
+    return r.saisons.includes(saisonEff);
+  }
+
   // Formate une quantité par personne × N convives pour l'affichage recette
   function fmtQte(qte, unite, personnes) {
     const total = Math.round(qte * personnes * 100) / 100;
@@ -62,7 +92,8 @@
    * }
    */
   function genererMenu(options) {
-    const { personnes, budget, creneaux, repetition, complexiteMax, enseignes } = options;
+    const { personnes, budget, creneaux, repetition, complexiteMax, enseignes, saison } = options;
+    const saisonEff = resoudreSaison(saison);
 
     // 1. Liste des créneaux à remplir (jour + moment)
     const moments = creneaux === "les_deux" ? ["midi", "soir"] : [creneaux];
@@ -74,8 +105,17 @@
     }
     const nbRepas = slots.length;
 
-    // 2. Recettes éligibles (complexité <= max), avec leur coût par repas
-    const avecCout = RECETTES.filter((r) => r.complexite <= complexiteMax).map((r) => ({
+    // 2. Recettes éligibles (complexité <= max + de saison), avec coût par repas.
+    //    Si le filtre saison laisse trop peu de recettes, on retombe sur toutes
+    //    les recettes (complexité seule) pour ne jamais bloquer la génération.
+    const eligiblesSaison = RECETTES.filter(
+      (r) => r.complexite <= complexiteMax && recetteDeSaison(r, saisonEff)
+    );
+    const base =
+      eligiblesSaison.length >= 12
+        ? eligiblesSaison
+        : RECETTES.filter((r) => r.complexite <= complexiteMax);
+    const avecCout = base.map((r) => ({
       recette: r,
       cout: coutRecette(r, personnes, enseignes),
     }));
@@ -187,12 +227,91 @@
 
   // --- Rendu HTML ----------------------------------------------------------
 
+  // Dernière liste de courses générée, en texte (pour export)
+  let listeCoursesTexte = "";
+  let listeCoursesBring = "";
+
   function fmt(chf) {
     return chf == null ? "—" : chf.toFixed(2) + " CHF";
   }
 
+  // --- Export de la liste de courses ---------------------------------------
+  function toast(message) {
+    let el = document.getElementById("toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "toast";
+      document.body.appendChild(el);
+    }
+    el.textContent = message;
+    el.classList.add("visible");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove("visible"), 2600);
+  }
+
+  // Copie robuste : Clipboard API si dispo, sinon repli execCommand (http, etc.)
+  async function copierTexte(texte) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(texte);
+        return;
+      }
+      throw new Error("clipboard indisponible");
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = texte;
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (!ok) throw new Error("copie échouée");
+    }
+  }
+
+  function copierListe() {
+    if (!listeCoursesTexte) return toast("Génère d'abord un menu 🙂");
+    copierTexte(listeCoursesTexte)
+      .then(() => toast("📋 Liste copiée dans le presse-papier !"))
+      .catch(() => toast("Impossible de copier."));
+  }
+
+  function telechargerListe() {
+    if (!listeCoursesTexte) return toast("Génère d'abord un menu 🙂");
+    const blob = new Blob([listeCoursesTexte], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "liste-courses-bathcooking.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast("⬇️ Liste téléchargée");
+  }
+
+  function imprimerListe() {
+    if (!listeCoursesTexte) return toast("Génère d'abord un menu 🙂");
+    document.body.classList.add("impression-liste");
+    window.print();
+    setTimeout(() => document.body.classList.remove("impression-liste"), 500);
+  }
+
+  function bringListe() {
+    if (!listeCoursesBring) return toast("Génère d'abord un menu 🙂");
+    // Bring! n'importe que du HTML statique (schema.org) : pas d'import auto
+    // possible depuis une liste générée à la volée. On copie donc la liste et
+    // on ouvre Bring! pour l'ajouter manuellement.
+    const faire = () => {
+      window.open("https://web.getbring.com/", "_blank", "noopener");
+      toast("📋 Liste copiée — ajoute-la dans Bring!");
+    };
+    copierTexte(listeCoursesBring).then(faire).catch(faire);
+  }
+
   function afficherResultats(options) {
     const { personnes, budget, enseignes } = options;
+    const saisonEff = resoudreSaison(options.saison);
     const { menu, nbRepas } = genererMenu(options);
     const { parRayon, totalOptimise, totalParEnseigne } = genererListeCourses(
       menu,
@@ -207,6 +326,7 @@
     bandeau.innerHTML = `
       <strong>${fmt(totalOptimise)}</strong> estimés pour
       <strong>${nbRepas} repas</strong> · ${personnes} pers.
+      &nbsp;·&nbsp; 🌿 ${SAISON_LABEL[saisonEff] || saisonEff}
       &nbsp;|&nbsp; Budget : ${fmt(budget)}
       &nbsp;→&nbsp; ${
         depasse
@@ -313,6 +433,24 @@
     }
     elListe.innerHTML = htmlListe;
 
+    // Versions texte de la liste (pour Copier / Télécharger / Bring!)
+    let txt = "🛒 Liste de courses — BathCooking\n";
+    txt += "Prix : " + window.BATHCOOKING_DATA.prixMaj + "\n";
+    let bring = "";
+    for (const rayonKey in RAYONS) {
+      const lignes = parRayon[rayonKey];
+      if (!lignes || !lignes.length) continue;
+      txt += `\n${RAYONS[rayonKey]} :\n`;
+      const tri = lignes.slice().sort((a, b) => a.nom.localeCompare(b.nom));
+      for (const l of tri) {
+        txt += `  - ${l.nom} — ${l.qte} ${l.unite}  (${l.enseigne || "?"}, ${fmt(l.cout)})\n`;
+        bring += `${l.nom} — ${l.qte} ${l.unite}\n`;
+      }
+    }
+    txt += `\nTotal estimé : ${fmt(totalOptimise)} · ${nbRepas} repas · ${personnes} pers.\n`;
+    listeCoursesTexte = txt;
+    listeCoursesBring = bring;
+
     // Récap par enseigne
     const elRecap = document.getElementById("resultat-recap");
     let htmlRecap = '<h4>Répartition par enseigne (au moins cher)</h4><ul>';
@@ -408,6 +546,16 @@
     if (rech) rech.addEventListener("input", afficherToutesRecettes);
     if (filt) filt.addEventListener("change", afficherToutesRecettes);
 
+    // Boutons d'export de la liste de courses
+    const brancher = (id, fn) => {
+      const b = document.getElementById(id);
+      if (b) b.addEventListener("click", fn);
+    };
+    brancher("btn-copier", copierListe);
+    brancher("btn-telecharger", telechargerListe);
+    brancher("btn-imprimer", imprimerListe);
+    brancher("btn-bring", bringListe);
+
     const form = document.getElementById("form-courses");
 
     function lireOptions() {
@@ -418,6 +566,7 @@
         creneaux: fd.get("creneaux"),
         repetition: parseInt(fd.get("repetition"), 10) || 1,
         complexiteMax: parseInt(fd.get("complexiteMax"), 10) || 3,
+        saison: fd.get("saison") || "auto",
         enseignes: ENSEIGNES.filter((en) => fd.get("enseigne_" + en)),
       };
     }
