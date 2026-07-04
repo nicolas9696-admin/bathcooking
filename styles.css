@@ -437,6 +437,47 @@ main { max-width: 1040px; margin: 0 auto; padding: 1.6rem 1rem 2rem; }
   body.impression-liste .carte { box-shadow: none; border: none; }
 }
 
+/* ---------- Optimisations mobile (≤ 480px) ---------- */
+@media (max-width: 480px) {
+  .entete { padding: 1.1rem 0.9rem 0; }
+  .marque-txt h1 { font-size: 1.5rem; }
+  .sous-titre { font-size: 0.85rem; }
+  main { padding: 1.1rem 0.8rem 2rem; }
+  .carte { padding: 1.1rem; border-radius: 14px; }
+
+  /* Liste de courses : nom sur toute la largeur, détails alignés à droite dessous */
+  .rayon li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem 0.5rem;
+  }
+  .rayon li label { flex: 1 1 100%; }
+  .rayon li .qte { margin-left: auto; }
+
+  /* Cartes « À cuisiner » / recettes : nom du plat sur sa propre ligne */
+  .recette-cuisiner summary,
+  .recette-browse summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+  }
+  .recette-cuisiner summary .plat,
+  .recette-browse summary .plat { flex: 1 1 100%; }
+  .recette-cuisiner summary .badge-repas { margin-left: 0; }
+  .recette-cuisiner summary .complexite,
+  .recette-browse summary .complexite { margin-left: auto; }
+
+  /* Menu planning : laisser le nom respirer */
+  .repas-plan { grid-template-columns: 3rem 1fr auto; }
+  .repas-plan .complexite { display: none; }
+
+  /* Boutons d'export : zone tactile plus confortable */
+  .btn-mini { padding: 0.55rem 0.85rem; font-size: 0.85rem; }
+  .export-actions { gap: 0.4rem; }
+}
+
 /* ---------- Pied ---------- */
 .pied { text-align: center; color: var(--texte-doux); font-size: 0.85rem; font-weight: 600; padding: 1rem 1rem 2rem; }
 .pied strong { color: var(--texte); }
